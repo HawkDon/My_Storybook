@@ -1,0 +1,48 @@
+.wrapper {
+    border: 3px solid black;
+    width: 800px;
+    height: 600px;
+    background-color: lightgray;
+    text-align: center;
+    position: relative;
+}
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+a:hover {
+    color: red;
+}
+
+.content {
+    border: 3px solid black;
+    width: 600px;
+    height: 400px;
+    position: absolute;
+    left: 100px;
+    margin-top: 30px;
+}
+
+input[type=text] {
+    width: 250px;
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 12px 12px 12px 12px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+span:active{
+    background-color: yellow
+}

@@ -1,0 +1,10 @@
+.input-field {
+    padding: 5px;
+    padding-right:100px; /* something like this */
+    font-size: 1em;
+    width: 300px;
+  }
+  .input-select{
+    height:29px; color:black; font-weight:bold; border:none; outline:none;
+    margin-left:-95px;
+  }
