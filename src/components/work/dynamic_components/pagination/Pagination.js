@@ -17,29 +17,26 @@ class Pagination extends Component {
 
     }
 
-    async componentDidMount() {
-        const data = await fetch('https://jsonplaceholder.typicode.com/todos')
-            .then(response => response.json());
-        const { size } = this.state;
-        const amountOfPages = Math.ceil(data.length / size);
-        const arrayOfPages = ([...Array(amountOfPages).keys()].map(x => x + 1));
-        const pageOne = data.slice(0, size);
-        this.setState({
-            data: data,
-            pages: arrayOfPages,
-            pageOfData: pageOne
-        })
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.data !== this.state.data) {
-            const { data, size } = this.state;
-            const amountOfPages = Math.ceil(data.length / size);
-            const arrayOfPages = ([...Array(amountOfPages).keys()].map(x => x + 1));
-            this.setState({
-                pages: arrayOfPages
-            })
+    static getDerivedStateFromProps(props, state) {
+        if(props.data === state.data) {
+            return null;
         }
+        return {
+            data: props.data > state.data,
+            pageOfData: props.pageOne > state.pageOfData,
+            pages: props.pages > state.pages,
+            size: props.size > state.size,
+        }
+    }
+    
+    //Deprecated soon.. need another alternative later if we swap to react 17.
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            data: nextProps.data,
+            pageOfData: nextProps.pageOne,
+            pages: nextProps.pages,
+            size: nextProps.size,
+        })
     }
 
     changeInput = (e) => {
@@ -51,6 +48,11 @@ class Pagination extends Component {
                 .then(response => response.json())
             const filteredData = data.filter(res => res.title.includes(inputValue));
             const pageOne = filteredData.slice(0, size);
+            const amountOfPages = Math.ceil(filteredData.length / size);
+            const arrayOfPages = ([...Array(amountOfPages).keys()].map(x => x + 1));
+            this.setState({
+                pages: arrayOfPages
+            })
             if (pageOne.length === 0) {
                 this.setState({
                     data: filteredData,
@@ -60,7 +62,8 @@ class Pagination extends Component {
             } else {
                 this.setState({
                     data: filteredData,
-                    pageOfData: pageOne
+                    pageOfData: pageOne,
+                    pages: arrayOfPages
                 })
             }
         })
@@ -99,7 +102,8 @@ class Pagination extends Component {
                     (<div className="pagination">
                         {this.state.pages.map(ele => <a href="" onClick={this.displayLines} value={ele}>{ele}</a>)}
                         <br />
-
+                        {this.state.type ? (<label>{this.state.type.title}</label>) : null}
+                        <br />
                         <input type="submit" value="Gem" onClick={this.addType} />
                     </div>) : null}
                 <div className="content">
@@ -110,4 +114,39 @@ class Pagination extends Component {
     }
 }
 
-export default Pagination;
+class PaginationEntry extends Component {
+
+    state = {
+        data: [],
+        size: 20,
+        pages: [],
+        pageOne: []
+    }
+
+    async componentDidMount() {
+        const data = await fetch('https://jsonplaceholder.typicode.com/todos')
+            .then(response => response.json());
+        const { size } = this.state;
+        const amountOfPages = Math.ceil(data.length / size);
+        const arrayOfPages = ([...Array(amountOfPages).keys()].map(x => x + 1));
+        const pageOne = data.slice(0, size);
+        this.setState({
+            data: data,
+            pages: arrayOfPages,
+            pageOne: pageOne
+        })
+    }
+
+    render() {
+        const { data, size, pages, pageOne } = this.state;
+        return (
+            <Pagination 
+            size={size}
+            data={data}
+            pages={pages}
+            pageOne={pageOne}
+            />
+        );
+    }
+}
+export default PaginationEntry;
