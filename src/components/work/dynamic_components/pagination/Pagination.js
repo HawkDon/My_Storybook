@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import './position.css';
 
 
-class Pagination extends Component {
+export class Pagination extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,26 +17,15 @@ class Pagination extends Component {
 
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if(props.data === state.data) {
-            return null;
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.data !== prevProps.data) {
+            this.setState({
+                data: this.props.data,
+                pageOfData: this.props.pageOne,
+                pages: this.props.pages,
+                size: this.props.size,
+            })
         }
-        return {
-            data: props.data > state.data,
-            pageOfData: props.pageOne > state.pageOfData,
-            pages: props.pages > state.pages,
-            size: props.size > state.size,
-        }
-    }
-    
-    //Deprecated soon.. need another alternative later if we swap to react 17.
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            data: nextProps.data,
-            pageOfData: nextProps.pageOne,
-            pages: nextProps.pages,
-            size: nextProps.size,
-        })
     }
 
     changeInput = (e) => {
@@ -57,7 +46,8 @@ class Pagination extends Component {
                 this.setState({
                     data: filteredData,
                     pageOfData: pageOne,
-                    pages: []
+                    pages: [],
+                    type: {}
                 })
             } else {
                 this.setState({
@@ -79,7 +69,7 @@ class Pagination extends Component {
         })
     }
 
-    addType = () => {
+    addType = (e) => {
         const { type } = this.state;
         console.log("Lad os gemme!");
         console.log(type);
@@ -87,6 +77,7 @@ class Pagination extends Component {
     }
 
     handleSelect = (res) => (e) => {
+        e.preventDefault();
         this.setState({
             type: res
         })
@@ -101,13 +92,13 @@ class Pagination extends Component {
                 {this.state.pages.length ?
                     (<div className="pagination">
                         {this.state.pages.map(ele => <a href="" onClick={this.displayLines} value={ele}>{ele}</a>)}
-                        <br />
+                        <br /><br />
                         {this.state.type ? (<label>{this.state.type.title}</label>) : null}
-                        <br />
+                        <br /><br />
                         <input type="submit" value="Gem" onClick={this.addType} />
                     </div>) : null}
                 <div className="content">
-                    {this.state.pageOfData.map(res => <span onClick={this.handleSelect(res)}>{res.title}<br /></span>)}
+                    {this.state.pageOfData.map(res => <a href="" onClick={this.handleSelect(res)}>{res.title}<br /></a>)}
                 </div>
             </div>
         );
@@ -136,6 +127,7 @@ class PaginationEntry extends Component {
             pageOne: pageOne
         })
     }
+
 
     render() {
         const { data, size, pages, pageOne } = this.state;
